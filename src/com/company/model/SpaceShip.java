@@ -29,6 +29,14 @@ public class SpaceShip extends Sprite {
     @Override
     public void move() {
         x += dx;
+
+        if (x < SPACESHIP_WIDTH) {
+            x = SPACESHIP_WIDTH;
+        }
+
+        if (x > (BOARD_WIDTH - SPACESHIP_WIDTH * 2)) {
+            x = (BOARD_WIDTH - SPACESHIP_WIDTH * 2);
+        }
     }
 
 
