@@ -11,6 +11,14 @@ public class Constants {
     public static final int BOARD_WIDTH = 900;
     public static final int BOARD_HEIGHT = 750;
 
+    // UFO related constants
+    public static final int ENEMY_SHIP_WIDTH = 32;
+    public static final int ENEMY_SHIP_HEIGHT = 24;
+    public static final int ENEMY_SHIP_INIT_X = 280;
+    public static final int ENEMY_SHIP_INIT_Y = 100;
+    public static final int ENEMY_SHIP_ROW = 4;
+    public static final int ENEMY_SHIP_COLUMN = 8;
+
     // speed of the application
     public static final int GAME_SPEED = 10;
     public static final int SPACESHIP_WIDTH = 34;
