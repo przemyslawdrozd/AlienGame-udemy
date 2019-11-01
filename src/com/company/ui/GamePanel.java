@@ -2,6 +2,7 @@ package com.company.ui;
 
 import com.company.callbacks.GameEventListener;
 import com.company.image.*;
+import com.company.model.Laser;
 import com.company.model.SpaceShip;
 
 import javax.swing.*;
@@ -17,6 +18,7 @@ public class GamePanel extends JPanel {
     private Timer timer;
     private SpaceShip spaceShip;
     private boolean inGame = true;
+    private Laser laser;
 
     public GamePanel(){
         initVariables();
@@ -25,6 +27,7 @@ public class GamePanel extends JPanel {
 
     private void initVariables() {
         this.spaceShip = new SpaceShip();
+        this.laser = new Laser();
         this.backgroundImage = ImageFactory.createImage(BACKGROUND);
         this.timer = new Timer(GAME_SPEED, new GameLoop(this)); // needed to make animations
         this.timer.start();
@@ -38,6 +41,11 @@ public class GamePanel extends JPanel {
 
     private void drawPlayer(Graphics g) {
         g.drawImage(spaceShip.getImage(), spaceShip.getX(), spaceShip.getY(), this);
+    }
+
+    private void drawLaser(Graphics g) {
+        if (!laser.isDead())
+            g.drawImage(laser.getImage(), laser.getX(), laser.getY(), this);
     }
 
     // set Background
@@ -56,6 +64,7 @@ public class GamePanel extends JPanel {
     private void doDrawing(Graphics g) {
         if (inGame) {
             drawPlayer(g);
+            drawLaser(g);
         } else {
             if (timer.isRunning()){
                 timer.stop();
@@ -72,6 +81,7 @@ public class GamePanel extends JPanel {
 
     private void update() {
         this.spaceShip.move();
+        this.laser.move();
     }
 
     public void keyReleased(KeyEvent e) {
@@ -80,5 +90,16 @@ public class GamePanel extends JPanel {
 
     public void keyPressed(KeyEvent e) {
         this.spaceShip.keyPressed(e);
+
+        int key = e.getKeyCode();
+
+        if (key == KeyEvent.VK_SPACE) {
+            int laserX = this.spaceShip.getX();
+            int laserY = this.spaceShip.getY();
+
+            if (inGame && laser.isDead()) {
+                laser = new Laser(laserX, laserY);
+            }
+        }
     }
 }
