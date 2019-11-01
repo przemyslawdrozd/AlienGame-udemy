@@ -16,6 +16,9 @@ public class Constants {
     public static final int SPACESHIP_WIDTH = 34;
     public static final int SPACESHIP_HEIGHT = 28;
 
+    // Speed of the laser
+    public static final int LASER_HORIZONTAL_TRANS = 4;
+
     // images for the objects
     public static final String UFO_IMAGE_URL = "/Users/przemo06133/Documents/aliengame/src/images/ufo.png";
     public static final String LASER_IMAGE_URL = "/Users/przemo06133/Documents/aliengame/src/images/laser.png";
