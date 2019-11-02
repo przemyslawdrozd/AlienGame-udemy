@@ -6,6 +6,7 @@ import com.company.model.Bomb;
 import com.company.model.EnemyShip;
 import com.company.model.Laser;
 import com.company.model.SpaceShip;
+import com.company.sound.SoundFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +20,7 @@ import static com.company.image.Image.BACKGROUND;
 public class GamePanel extends JPanel {
 
     private ImageIcon backgroundImage;
+    private SoundFactory soundFactory;
     private Timer clockTimer;
     private SpaceShip spaceShip;
     private boolean inGame = true;
@@ -47,6 +49,7 @@ public class GamePanel extends JPanel {
     }
 
     private void initVariables() {
+        this.soundFactory = new SoundFactory();
         this.generator = new Random();
         this.spaceShip = new SpaceShip();
         this.laser = new Laser();
@@ -166,6 +169,7 @@ public class GamePanel extends JPanel {
                 if (shotX >= alienX && shotX <= (alienX + ENEMY_SHIP_WIDTH) &&
                      shotY <= (alienY) && shotY <= (alienY + ENEMY_SHIP_HEIGHT)) {
                     deaths++;
+                    soundFactory.explosion();
                     alien.setVisible(false);
                     laser.die();
                 }
@@ -237,6 +241,7 @@ public class GamePanel extends JPanel {
             int laserY = this.spaceShip.getY();
 
             if (inGame && laser.isDead()) {
+                soundFactory.laser();
                 laser = new Laser(laserX, laserY);
             }
         }

@@ -40,4 +40,8 @@ public class Constants {
     public static final String BOMB_IMAGE_URL = "/Users/przemo06133/Documents/aliengame/src/images/bomb.png";
     public static final String BACKGROUND_IMAGE_URL = "/Users/przemo06133/Documents/aliengame/src/images/background.jpg";
     public static final String SPACESHIP_IMAGE_URL = "/Users/przemo06133/Documents/aliengame/src/images/spaceship.png";
+
+    // sounds
+    public static final String LASER_SOUND = "/Users/przemo06133/Documents/aliengame/src/sounds/laser.wav";
+    public static final String EXPLOSION_SOUND = "/Users/przemo06133/Documents/aliengame/src/sounds/explosion.wav";
 }
