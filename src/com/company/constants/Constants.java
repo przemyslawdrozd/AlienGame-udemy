@@ -1,7 +1,5 @@
 package com.company.constants;
 
-import java.util.Collections;
-
 public class Constants {
 
     private Constants(){
@@ -18,6 +16,9 @@ public class Constants {
     public static final int ENEMY_SHIP_INIT_Y = 100;
     public static final int ENEMY_SHIP_ROW = 4;
     public static final int ENEMY_SHIP_COLUMN = 8;
+
+    public static final int BORDER_PADDING = 50;
+    public static final int GO_DOWN = 30; // -30 pix width every loop move
 
     // speed of the application
     public static final int GAME_SPEED = 10;

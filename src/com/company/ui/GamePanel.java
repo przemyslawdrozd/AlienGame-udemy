@@ -24,7 +24,7 @@ public class GamePanel extends JPanel {
     private int direction = -1;
     private java.util.List<EnemyShip> enemyShips;
 
-    public GamePanel(){
+    public GamePanel() {
         initVariables();
         initLayout();
         initGame();
@@ -65,7 +65,7 @@ public class GamePanel extends JPanel {
     }
 
     private void drawAlien(Graphics g) {
-        for (EnemyShip enemyShip: this.enemyShips) {
+        for (EnemyShip enemyShip : this.enemyShips) {
             if (enemyShip.isVisible()) {
                 g.drawImage(enemyShip.getImage(), enemyShip.getX(), enemyShip.getY(), this);
             }
@@ -78,7 +78,7 @@ public class GamePanel extends JPanel {
         super.paintComponent(g);
 
         g.drawImage(backgroundImage.getImage(), // image
-                0,0, // starting point of image
+                0, 0, // starting point of image
                 null // fulfill Panel with the image
         );
 
@@ -91,7 +91,7 @@ public class GamePanel extends JPanel {
             drawLaser(g);
             drawAlien(g);
         } else {
-            if (timer.isRunning()){
+            if (timer.isRunning()) {
                 timer.stop();
             }
         }
@@ -107,6 +107,22 @@ public class GamePanel extends JPanel {
     private void update() {
         this.spaceShip.move();
         this.laser.move();
+
+        for (EnemyShip enemyShip : this.enemyShips) {
+
+            if (enemyShip.getX() >= BOARD_WIDTH - 2 * BORDER_PADDING && direction != -1
+                    || enemyShip.getX() <= BORDER_PADDING && direction != 1) {
+                direction *= -1;
+
+                for (EnemyShip ufo : enemyShips) {
+                    ufo.setY(ufo.getY() + GO_DOWN);
+                }
+            }
+
+            if (enemyShip.isVisible()) {
+                enemyShip.move(direction);
+            }
+        }
     }
 
     public void keyReleased(KeyEvent e) {
