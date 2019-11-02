@@ -27,6 +27,8 @@ public class GamePanel extends JPanel {
     private java.util.List<EnemyShip> enemyShips;
     private java.util.List<Bomb> bombs;
     private Random generator;
+    private String message;
+    private int deaths = 0;
 
     public GamePanel() {
         initVariables();
@@ -101,8 +103,24 @@ public class GamePanel extends JPanel {
             if (clockTimer.isRunning()) {
                 clockTimer.stop();
             }
+
+            drawGameOver(g);
         }
         Toolkit.getDefaultToolkit().sync();
+    }
+
+    private void drawGameOver(Graphics g) {
+        g.drawImage(backgroundImage.getImage(),0, 0, null);
+
+        Font font = new Font("Helvetica", Font.BOLD, 50);
+        FontMetrics fontMetrics = this.getFontMetrics(font);
+
+        g.setColor(Color.WHITE);
+        g.setFont(font);
+        g.drawString(message,
+                (BOARD_WIDTH / 2 - fontMetrics.stringWidth(message) / 2),
+                (BOARD_HEIGHT / 2 - 100));
+
     }
 
     private void drawBombs(Graphics g) {
@@ -120,6 +138,16 @@ public class GamePanel extends JPanel {
     }
 
     private void update() {
+
+        if (spaceShip.isDead()) {
+            inGame = false;
+            message = GAME_OVER + " killed: " + deaths;
+        }
+
+        if (deaths == this.enemyShips.size()) {
+            inGame = false;
+            message = WIN + " killed: " + deaths;
+        }
         this.spaceShip.move();
 
         int shotX = laser.getX();
@@ -137,7 +165,7 @@ public class GamePanel extends JPanel {
                 // this is collision detection algorithm
                 if (shotX >= alienX && shotX <= (alienX + ENEMY_SHIP_WIDTH) &&
                      shotY <= (alienY) && shotY <= (alienY + ENEMY_SHIP_HEIGHT)) {
-
+                    deaths++;
                     alien.setVisible(false);
                     laser.die();
                 }
@@ -152,7 +180,15 @@ public class GamePanel extends JPanel {
 
                 enemyShips.forEach(ufo -> ufo.setY(ufo.getY() + GO_DOWN));
             }
-            if (enemyShip.isVisible()) enemyShip.move(direction);
+            if (enemyShip.isVisible()) {
+
+                // if enemy ships reach bottom
+                if (enemyShip.getY() > BOARD_HEIGHT - 100 - SPACESHIP_HEIGHT) {
+                    spaceShip.die();
+                }
+
+                enemyShip.move(direction);
+            }
         });
 
         // Update for bombs
@@ -165,6 +201,22 @@ public class GamePanel extends JPanel {
 
         // moving the bombs
         for (Bomb bomb: bombs) {
+
+            int bombX = bomb.getX();
+            int bombY = bomb.getY();
+            int spaceShipX = spaceShip.getX();
+            int spaceShipY = spaceShip.getY();
+
+            if (!bomb.isDead() && !spaceShip.isDead()) {
+
+                if (bombX >= spaceShipX && bombX <= (spaceShipX + SPACESHIP_WIDTH) &&
+                    bombY >= spaceShipY && bombY <= (spaceShipY + SPACESHIP_HEIGHT)) {
+
+                    bomb.die();
+                    spaceShip.die();
+                }
+            }
+
             if (!bomb.isDead()) {
                 bomb.move();
             }
