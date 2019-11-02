@@ -20,6 +20,9 @@ public class Constants {
     public static final int BORDER_PADDING = 50;
     public static final int GO_DOWN = 30; // -30 pix width every loop move
 
+    public static final int BOMB_HEIGHT = 6;
+    public static final double BOMB_DROPPING_PROBABILITY = 0.0005;
+
     // speed of the application
     public static final int GAME_SPEED = 10;
     public static final int SPACESHIP_WIDTH = 34;

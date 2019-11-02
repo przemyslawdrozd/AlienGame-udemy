@@ -2,6 +2,7 @@ package com.company.ui;
 
 import com.company.callbacks.GameEventListener;
 import com.company.image.*;
+import com.company.model.Bomb;
 import com.company.model.EnemyShip;
 import com.company.model.Laser;
 import com.company.model.SpaceShip;
@@ -10,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Random;
 
 import static com.company.constants.Constants.*;
 import static com.company.image.Image.BACKGROUND;
@@ -17,12 +19,14 @@ import static com.company.image.Image.BACKGROUND;
 public class GamePanel extends JPanel {
 
     private ImageIcon backgroundImage;
-    private Timer timer;
+    private Timer clockTimer;
     private SpaceShip spaceShip;
     private boolean inGame = true;
     private Laser laser;
     private int direction = -1;
     private java.util.List<EnemyShip> enemyShips;
+    private java.util.List<Bomb> bombs;
+    private Random generator;
 
     public GamePanel() {
         initVariables();
@@ -41,12 +45,14 @@ public class GamePanel extends JPanel {
     }
 
     private void initVariables() {
+        this.generator = new Random();
         this.spaceShip = new SpaceShip();
         this.laser = new Laser();
         this.enemyShips = new ArrayList<>();
+        this.bombs = new ArrayList<>();
         this.backgroundImage = ImageFactory.createImage(BACKGROUND);
-        this.timer = new Timer(GAME_SPEED, new GameLoop(this)); // needed to make animations
-        this.timer.start();
+        this.clockTimer = new Timer(GAME_SPEED, new GameLoop(this)); // needed to make animations
+        this.clockTimer.start();
     }
 
     private void initLayout() {
@@ -90,12 +96,21 @@ public class GamePanel extends JPanel {
             drawPlayer(g);
             drawLaser(g);
             drawAlien(g);
+            drawBombs(g);
         } else {
-            if (timer.isRunning()) {
-                timer.stop();
+            if (clockTimer.isRunning()) {
+                clockTimer.stop();
             }
         }
         Toolkit.getDefaultToolkit().sync();
+    }
+
+    private void drawBombs(Graphics g) {
+        for (Bomb bomb: this.bombs) {
+            if (!bomb.isDead()) {
+                g.drawImage(bomb.getImage(), bomb.getX(), bomb.getY(), this);
+            }
+        }
     }
 
     // call every 10 millisecond
@@ -108,19 +123,28 @@ public class GamePanel extends JPanel {
         this.spaceShip.move();
         this.laser.move();
 
-        for (EnemyShip enemyShip : this.enemyShips) {
-
+        this.enemyShips.forEach(enemyShip -> {
             if (enemyShip.getX() >= BOARD_WIDTH - 2 * BORDER_PADDING && direction != -1
                     || enemyShip.getX() <= BORDER_PADDING && direction != 1) {
                 direction *= -1;
 
-                for (EnemyShip ufo : enemyShips) {
-                    ufo.setY(ufo.getY() + GO_DOWN);
-                }
+                enemyShips.forEach(ufo -> ufo.setY(ufo.getY() + GO_DOWN));
             }
+            if (enemyShip.isVisible()) enemyShip.move(direction);
+        });
 
-            if (enemyShip.isVisible()) {
-                enemyShip.move(direction);
+        // Update for bombs
+        for (EnemyShip enemyShip: this.enemyShips) {
+            if (enemyShip.isVisible() && generator.nextDouble() < BOMB_DROPPING_PROBABILITY) {
+                Bomb bomb = new Bomb(enemyShip.getX(), enemyShip.getY());
+                this.bombs.add(bomb);
+            }
+        }
+
+        // moving the bombs
+        for (Bomb bomb: bombs) {
+            if (!bomb.isDead()) {
+                bomb.move();
             }
         }
     }
