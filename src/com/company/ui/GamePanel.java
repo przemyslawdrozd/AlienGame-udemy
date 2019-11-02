@@ -31,6 +31,8 @@ public class GamePanel extends JPanel {
     private Random generator;
     private String message;
     private int deaths = 0;
+    private int score;
+    private int shield = 2;
 
     public GamePanel() {
         initVariables();
@@ -98,6 +100,7 @@ public class GamePanel extends JPanel {
 
     private void doDrawing(Graphics g) {
         if (inGame) {
+            drawScore(g);
             drawPlayer(g);
             drawLaser(g);
             drawAlien(g);
@@ -110,6 +113,21 @@ public class GamePanel extends JPanel {
             drawGameOver(g);
         }
         Toolkit.getDefaultToolkit().sync();
+    }
+
+    private void drawScore(Graphics g) {
+
+        if (!inGame) return;
+
+        Font font = new Font("Helvetica", Font.BOLD, 20);
+        FontMetrics fontMetrics = this.getFontMetrics(font);
+
+        g.setColor(Color.GRAY);
+        g.setFont(font);
+        g.drawString("Score: " + score, BOARD_WIDTH - 150, 50);
+        g.drawString("Shields : " + shield, 50, 50);
+
+
     }
 
     private void drawGameOver(Graphics g) {
@@ -172,6 +190,7 @@ public class GamePanel extends JPanel {
                     soundFactory.explosion();
                     alien.setVisible(false);
                     laser.die();
+                    score += 20;
                 }
             }
             this.laser.move();
@@ -181,16 +200,14 @@ public class GamePanel extends JPanel {
             if (enemyShip.getX() >= BOARD_WIDTH - 2 * BORDER_PADDING && direction != -1
                     || enemyShip.getX() <= BORDER_PADDING && direction != 1) {
                 direction *= -1;
-
                 enemyShips.forEach(ufo -> ufo.setY(ufo.getY() + GO_DOWN));
             }
-            if (enemyShip.isVisible()) {
 
+            if (enemyShip.isVisible()) {
                 // if enemy ships reach bottom
                 if (enemyShip.getY() > BOARD_HEIGHT - 100 - SPACESHIP_HEIGHT) {
                     spaceShip.die();
                 }
-
                 enemyShip.move(direction);
             }
         });
@@ -217,13 +234,16 @@ public class GamePanel extends JPanel {
                     bombY >= spaceShipY && bombY <= (spaceShipY + SPACESHIP_HEIGHT)) {
 
                     bomb.die();
-                    spaceShip.die();
+                    shield--;
+                    if (shield < 0) {
+                        spaceShip.die();
+                    }
                 }
             }
 
             if (!bomb.isDead()) {
                 bomb.move();
-            }
+            } 
         }
     }
 
